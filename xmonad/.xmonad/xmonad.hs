@@ -22,20 +22,35 @@ import XMonad.Prompt.Workspace
 --myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
 myWorkspaces :: Forest String
 myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
+               , Node "communication" [ Node "slack" []
+                                      , Node "mail" []
+                                      , Node "zoom" []
+                                      ]
                , Node "Home"       -- for everyday activity's
                    [ Node "local terminal" []   --  with 4 extra sub-workspaces, for even more activity's
                    , Node "remote terminal" []
-                   , Node "3" []
-                   , Node "4" []
+                   , Node "papers" []
+                   , Node "spotify" []
                    ]
                , Node "Programming" -- for all your programming needs
                    [ Node "emacs" []
                    , Node "code"    [] -- documentation
+                   , Node "joplin"    [] -- documentation
                    ]
                ]
-
+-- spawn application on a workspace
+spawnToWorkspace :: String -> String -> X ()
+spawnToWorkspace program workspace = do
+                                      spawn program
+                                      windows $ W.greedyView workspace
 myStartupHook = do
             spawnOnce "~/.screenlayout/wide-tall.sh"
+            --spawnToWorkspace "emacs" "emacs" -- spawn emacs on its workspace
+            --spawnToWorkspace "firefox" "Browser"
+            --spawnToWorkspace "local terminal" "terminator -l tmux"
+            --spawnToWorkspace "nautilus" "Home"
+            --spawnToWorkspace "evince" "papers"
+            --spawnToWorkspace "spotify" "spotify"
 -- The main function.
 main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
 --main = xmonad $ myConfig
