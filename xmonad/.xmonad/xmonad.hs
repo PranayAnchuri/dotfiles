@@ -19,6 +19,9 @@ import XMonad.Hooks.WorkspaceHistory (workspaceHistoryHook)
 import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Prompt
 import XMonad.Prompt.Workspace
+import XMonad.Actions.CycleWS
+import XMonad.Actions.Submap
+import qualified Data.Map as M
 --myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
 myWorkspaces :: Forest String
 myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
@@ -94,6 +97,13 @@ myKeys =
                                                                 , Node (TSNode "Dim"    "Quite dark"              (spawn "xbacklight -set 10"))  []
                                                                 ]
    ]) -- can change to view or greedy view
+        , ((mod4Mask,               xK_z),     toggleWS) -- switch to previous workspace
+        --, ((mod4Mask, xK_s), submap . M.fromList $ -- use the following snippet for nested keybindings
+       --[ ((0, xK_n),     spawn "mpc next")
+       --, ((0, xK_p),     spawn "mpc prev")
+       --, ((0, xK_z),     spawn "mpc random")
+       --, ((0, xK_space), spawn "mpc toggle")
+       --])
         ]
         -- ++
 
