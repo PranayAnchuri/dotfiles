@@ -22,6 +22,13 @@ import XMonad.Prompt.Workspace
 import XMonad.Actions.CycleWS
 import XMonad.Actions.Submap
 import qualified Data.Map as M
+-- import for layouts
+import XMonad.Layout.Spiral
+import Data.Ratio -- this makes the '%' operator available (optional)
+import XMonad.Layout.Spiral
+import XMonad.Layout.Grid
+import XMonad.Layout.Spacing
+
 --myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
 myWorkspaces :: Forest String
 myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
@@ -41,6 +48,15 @@ myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
                    , Node "joplin"    [] -- documentation
                    ]
                ]
+ 
+myLayouts = spacing 4 $
+            layoutTall ||| layoutGrid ||| layoutFull
+    where
+      layoutTall = Tall 1 (3/100) (1/2)
+      layoutSpiral = spiral (125 % 146)
+      layoutGrid = Grid
+      layoutMirror = Mirror (Tall 1 (3/100) (3/5))
+      layoutFull = Full
 -- spawn application on a workspace
 spawnToWorkspace :: String -> String -> X ()
 spawnToWorkspace program workspace = do
@@ -117,7 +133,8 @@ myKeys =
 
 myConfig =   defaultConfig
         { manageHook = manageDocks <+> manageHook defaultConfig
-        , layoutHook = avoidStruts  $  layoutHook defaultConfig
+        --, layoutHook = avoidStruts  $  layoutHook defaultConfig
+        , layoutHook = avoidStruts $ myLayouts
         , workspaces = toWorkspaces myWorkspaces
         , logHook = workspaceHistoryHook
         , startupHook = myStartupHook     -- Startup scripts
