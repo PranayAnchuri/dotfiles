@@ -30,11 +30,16 @@ import XMonad.Layout.Grid
 import XMonad.Layout.Spacing
 import XMonad.Prompt
 import XMonad.Prompt.Window
+import XMonad.Prompt.FuzzyMatch
+import Data.Char -- for toLower function
 
-fuzzyMatch :: String -> String -> Bool
-fuzzyMatch [] _ = True
-fuzzyMatch _ [] = False
-fuzzyMatch (x:xs) (y:ys) =  (x == y && fuzzyMatch xs ys) || (x /=y && (fuzzyMatch (x:xs) ys))
+myFuzzyMatch :: String -> String -> Bool
+myFuzzyMatch [] _ = True
+myFuzzyMatch _ [] = False
+--myFuzzyMatch (x:xs) (y:ys) =  (x == y && myFuzzyMatch xs ys) || (x /=y && (myFuzzyMatch (x:xs) ys))
+-- concise way of writing fuzzy match
+myFuzzyMatch xxs@(x:xs) (y:ys) | toLower x == toLower y = myFuzzyMatch xs ys
+                               | otherwise = myFuzzyMatch xxs ys
 
 myPromptConfig = def
                  {
