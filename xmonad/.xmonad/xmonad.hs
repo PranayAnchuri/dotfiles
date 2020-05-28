@@ -28,6 +28,8 @@ import Data.Ratio -- this makes the '%' operator available (optional)
 import XMonad.Layout.Spiral
 import XMonad.Layout.Grid
 import XMonad.Layout.Spacing
+import XMonad.Prompt
+import XMonad.Prompt.Window
 
 --myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
 myWorkspaces :: Forest String
@@ -102,7 +104,10 @@ myKeys =
         , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
         , ((0, xK_Print), spawn "scrot")
         , ((mod4Mask, xK_p), spawn "rofi -show run")
-        , ((mod4Mask, xK_g     ), gotoMenu) -- quick menus for switching windows
+        --, ((mod4Mask, xK_g     ), gotoMenu) -- quick menus for switching windows
+        , ((mod4Mask , xK_g     ), windowPrompt
+                                       def { autoComplete = Just 500000 }
+                                       Goto allWindows)
         , ((mod4Mask, xK_f), treeselectWorkspace myTreeConf myWorkspaces W.view) -- can change to view or greedy view
         , ((mod4Mask .|. shiftMask, xK_m     ), workspacePrompt def (windows . W.shift))
         , ((mod4Mask, xK_a), treeselectAction myTreeConf [ Node (TSNode "Weather"    "displays weather"      (spawn "metar -d KTTN | xmessage -nearmouse -center -timeout 1 -title Trenton -buttons OK:1 -default OK -file - ")) []
