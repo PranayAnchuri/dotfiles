@@ -31,6 +31,22 @@ import XMonad.Layout.Spacing
 import XMonad.Prompt
 import XMonad.Prompt.Window
 
+fuzzyMatch :: String -> String -> Bool
+fuzzyMatch [] _ = True
+fuzzyMatch _ [] = False
+fuzzyMatch (x:xs) (y:ys) =  (x == y && fuzzyMatch xs ys) || (x /=y && (fuzzyMatch (x:xs) ys))
+
+myPromptConfig = def
+                 {
+                   position = Top
+                 , promptBorderWidth = 0
+                 , defaultText = ""
+                 , alwaysHighlight = True
+                 , height = 32
+                 , font = "xft:DejaVu Sans Condensed-16:normal"
+                , autoComplete = Just 500000
+                , searchPredicate = fuzzyMatch
+                 }
 --myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
 myWorkspaces :: Forest String
 myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
@@ -106,7 +122,7 @@ myKeys =
         , ((mod4Mask, xK_p), spawn "rofi -show run")
         --, ((mod4Mask, xK_g     ), gotoMenu) -- quick menus for switching windows
         , ((mod4Mask , xK_g     ), windowPrompt
-                                       def { autoComplete = Just 500000 }
+                                   myPromptConfig
                                        Goto allWindows)
         , ((mod4Mask, xK_f), treeselectWorkspace myTreeConf myWorkspaces W.view) -- can change to view or greedy view
         , ((mod4Mask .|. shiftMask, xK_m     ), workspacePrompt def (windows . W.shift))
