@@ -19,6 +19,9 @@ import XMonad.Hooks.WorkspaceHistory (workspaceHistoryHook)
 import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Prompt
 import XMonad.Prompt.Workspace
+import XMonad.Prompt.Shell
+import XMonad.Prompt.Ssh
+import XMonad.Prompt.XMonad
 import XMonad.Actions.CycleWS
 import XMonad.Actions.Submap
 import qualified Data.Map as M
@@ -33,6 +36,7 @@ import XMonad.Prompt.Window
 import XMonad.Prompt.FuzzyMatch
 import XMonad.Actions.WindowNavigation
 import Data.Char -- for toLower function
+
 
 myFuzzyMatch :: String -> String -> Bool
 myFuzzyMatch [] _ = True
@@ -144,6 +148,9 @@ myKeys =
         , ((mod4Mask , xK_g     ), windowPrompt
                                    myPromptConfig
                                        Goto allWindows)
+        , ((mod4Mask .|. controlMask, xK_x), shellPrompt myPromptConfig)
+        , ((mod4Mask .|. controlMask, xK_s), sshPrompt myPromptConfig)
+        --, ((mod4Mask .|. controlMask, xK_x), xmonadPrompt myPromptConfig)
         , ((mod4Mask, xK_f), treeselectWorkspace myTreeConf myWorkspaces W.view) -- can change to view or greedy view
         , ((mod4Mask .|. shiftMask, xK_m     ), workspacePrompt def (windows . W.shift))
         , ((mod4Mask, xK_a), treeselectAction myTreeConf [ Node (TSNode "Weather"    "displays weather"      (spawn "metar -d KTTN | xmessage -nearmouse -center -timeout 1 -title Trenton -buttons OK:1 -default OK -file - ")) []
