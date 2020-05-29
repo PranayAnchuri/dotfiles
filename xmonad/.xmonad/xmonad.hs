@@ -31,6 +31,7 @@ import XMonad.Layout.Spacing
 import XMonad.Prompt
 import XMonad.Prompt.Window
 import XMonad.Prompt.FuzzyMatch
+import XMonad.Actions.WindowNavigation
 import Data.Char -- for toLower function
 
 myFuzzyMatch :: String -> String -> Bool
@@ -94,7 +95,21 @@ myStartupHook = do
             --spawnToWorkspace "evince" "papers"
             --spawnToWorkspace "spotify" "spotify"
 -- The main function.
-main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
+-- (=<<) :: Monad m => (a -> m b) -> m a -> m b. An action that returns 'a' and a function that returns action 'b' on a.
+-- (>>=) :: Monad m => m a -> (a -> m b) -> m b - runs an action and passes the return value to a function that returns another action.
+-- The second action is performed as well.
+--statusBar :: LayoutClass l Window
+        -- => String    -- ^ the command line to launch the status bar
+        -- -> PP        -- ^ the pretty printing options
+        -- -> (XConfig Layout -> (KeyMask, KeySym))
+                -- -- ^ the desired key binding to toggle bar visibility
+        -- -> XConfig l -- ^ the base config
+        -- -> IO (XConfig (ModifiedLayout AvoidStruts l))
+-- withWindowNavigation :: (KeySym, KeySym, KeySym, KeySym) -> XConfig l -> IO (XConfig l)
+--main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
+main = do
+      config <- withWindowNavigation (xK_w, xK_a, xK_s, xK_d) $ myConfig
+      xmonad =<< statusBar myBar myPP toggleStrutsKey config
 --main = xmonad $ myConfig
 
 -- Command to launch the bar.
