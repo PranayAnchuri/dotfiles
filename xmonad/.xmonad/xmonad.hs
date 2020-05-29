@@ -36,6 +36,10 @@ import XMonad.Prompt.Window
 import XMonad.Prompt.FuzzyMatch
 import XMonad.Actions.WindowNavigation
 import Data.Char -- for toLower function
+import XMonad.Actions.ShowText
+import XMonad.Actions.MouseGestures
+import XMonad.Layout.CenteredMaster
+import XMonad.Layout.BinarySpacePartition as BSP
 
 
 myFuzzyMatch :: String -> String -> Bool
@@ -76,9 +80,17 @@ myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
                    , Node "joplin"    [] -- documentation
                    ]
                ]
- 
+              
+ -- | Add very simple decorations to windows of a layout.
+zenMode = renamed [Replace "Zen"] $ zenSpace BSP.emptyBSP
+ where
+  zenSpace =
+    spacingRaw False (Border 100 100 500 500) True (Border 10 10 10 10) True
+   
 myLayouts = spacing 4 $
-            layoutTall ||| layoutGrid ||| layoutFull
+            ---centerMaster Grid ||| layoutTall ||| layoutGrid ||| layoutFull
+            --- zenMode ||| layoutTall ||| layoutGrid ||| layoutFull ||| centerMaster Grid
+            zenMode ||| layoutFull ||| layoutGrid
     where
       layoutTall = Tall 1 (3/100) (1/2)
       layoutSpiral = spiral (125 % 146)
@@ -137,6 +149,12 @@ myTreeConf =
     , ts_indent = 60
     , ts_navigate = XMonad.Actions.TreeSelect.defaultNavigation
     }
+gestures = M.fromList
+        [ ([], focus)
+        , ([U], \w -> focus w >> windows W.swapUp)
+        , ([D], \w -> focus w >> windows W.swapDown)
+        , ([R, D], \_ -> sendMessage NextLayout)
+        ]
 -- Key binding to toggle the gap for the bar.
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 myKeys =
