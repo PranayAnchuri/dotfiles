@@ -13,6 +13,7 @@ import Data.Tree
 import XMonad.Actions.TreeSelect
 import XMonad.Hooks.WorkspaceHistory
 import qualified XMonad.StackSet as W
+import           XMonad.Layout.WindowNavigation
 import XMonad.Layout.IndependentScreens
 import XMonad.Actions.WindowBringer
 import XMonad.Hooks.WorkspaceHistory (workspaceHistoryHook)
@@ -40,6 +41,8 @@ import XMonad.Actions.ShowText
 import XMonad.Actions.MouseGestures
 import XMonad.Layout.CenteredMaster
 import XMonad.Layout.BinarySpacePartition as BSP
+import           XMonad.Layout.Tabbed
+import           XMonad.Layout.Simplest
 
 
 myFuzzyMatch :: String -> String -> Bool
@@ -82,6 +85,8 @@ myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
                ]
               
  -- | Add very simple decorations to windows of a layout.
+myTabConfig = def { inactiveBorderColor = "#FF0000"
+                  , activeTextColor = "#00FF00"}
 zenMode = renamed [Replace "Zen"] $ zenSpace BSP.emptyBSP
  where
   zenSpace =
@@ -90,7 +95,7 @@ zenMode = renamed [Replace "Zen"] $ zenSpace BSP.emptyBSP
 myLayouts = spacing 4 $
             ---centerMaster Grid ||| layoutTall ||| layoutGrid ||| layoutFull
             --- zenMode ||| layoutTall ||| layoutGrid ||| layoutFull ||| centerMaster Grid
-            zenMode ||| layoutFull ||| layoutGrid
+            tabbed shrinkText myTabConfig ||| zenMode ||| layoutFull ||| layoutGrid
     where
       layoutTall = Tall 1 (3/100) (1/2)
       layoutSpiral = spiral (125 % 146)
