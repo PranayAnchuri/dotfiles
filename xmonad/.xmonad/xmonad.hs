@@ -85,7 +85,7 @@ myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
 zenMode = renamed [Replace "Zen"] $ zenSpace BSP.emptyBSP
  where
   zenSpace =
-    spacingRaw False (Border 100 100 500 500) True (Border 10 10 10 10) True
+    spacingRaw False (Border 0 10 10 10) True (Border 10 10 10 10) True
    
 myLayouts = spacing 4 $
             ---centerMaster Grid ||| layoutTall ||| layoutGrid ||| layoutFull
@@ -149,6 +149,8 @@ myTreeConf =
     , ts_indent = 60
     , ts_navigate = XMonad.Actions.TreeSelect.defaultNavigation
     }
+
+passwordTool = "keepassxc || exit 1"
 gestures = M.fromList
         [ ([], focus)
         , ([U], \w -> focus w >> windows W.swapUp)
@@ -157,11 +159,18 @@ gestures = M.fromList
         ]
 -- Key binding to toggle the gap for the bar.
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
+nothing = 0
+screenshotClipboard =
+  "maim -s --hidecursor --format png /dev/stdout | xclip -selection clipboard -t image/png"
 myKeys =
         [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock; xset dpms force off")
-        , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
+        , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s ~/Pictures/%Y-%m-%d-%T-screenshot.png ")
         , ((0, xK_Print), spawn "scrot")
         , ((mod4Mask, xK_p), spawn "rofi -show run")
+        , ((nothing, xK_Print)                 , spawn screenshotClipboard)
+        , ((mod4Mask .|. shiftMask, xK_p)         , spawn passwordTool)
+        , ((mod4Mask,                           xK_r     ), sendMessage Rotate)
+        , ((mod4Mask,                           xK_s     ), sendMessage Balance)
         --, ((mod4Mask, xK_g     ), gotoMenu) -- quick menus for switching windows
         , ((mod4Mask , xK_g     ), windowPrompt
                                    myPromptConfig
