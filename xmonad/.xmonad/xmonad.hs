@@ -67,20 +67,21 @@ myPromptConfig = def
 --myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
 myWorkspaces :: Forest String
 myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
-               , Node "communication" [ Node "slack" []
+               , Node "comm" [ Node "slack" []
                                       , Node "mail" []
                                       , Node "zoom" []
                                       ]
-               , Node "Home"       -- for everyday activity's
-                   [ Node "local terminal" []   --  with 4 extra sub-workspaces, for even more activity's
-                   , Node "remote terminal" []
+               , Node "H"       -- for everyday activity's
+                   [ Node "local" []   --  with 4 extra sub-workspaces, for even more activity's
+                   , Node "remote" []
                    , Node "papers" []
                    , Node "spotify" []
                    ]
-               , Node "Programming" -- for all your programming needs
+               , Node "Pgm" -- for all your programming needs
                    [ Node "emacs" []
                    , Node "code"    [] -- documentation
                    , Node "joplin"    [] -- documentation
+                   , Node "gitkraken"    [] -- documentation
                    ]
                ]
               
@@ -95,7 +96,7 @@ zenMode = renamed [Replace "Zen"] $ zenSpace BSP.emptyBSP
 myLayouts = spacing 4 $
             ---centerMaster Grid ||| layoutTall ||| layoutGrid ||| layoutFull
             --- zenMode ||| layoutTall ||| layoutGrid ||| layoutFull ||| centerMaster Grid
-            tabbed shrinkText myTabConfig ||| zenMode ||| layoutFull ||| layoutGrid
+            tabbed shrinkText myTabConfig ||| BSP.emptyBSP ||| layoutGrid ||| centerMaster Grid
     where
       layoutTall = Tall 1 (3/100) (1/2)
       layoutSpiral = spiral (125 % 146)
@@ -128,6 +129,8 @@ myStartupHook = do
         -- -> IO (XConfig (ModifiedLayout AvoidStruts l))
 -- withWindowNavigation :: (KeySym, KeySym, KeySym, KeySym) -> XConfig l -> IO (XConfig l)
 --main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
+
+
 main = do
       config <- withWindowNavigation (xK_w, xK_a, xK_s, xK_d) $ myConfig
       xmonad =<< statusBar myBar myPP toggleStrutsKey config
@@ -137,7 +140,7 @@ main = do
 myBar = "xmobar"
 
 -- Custom PP, configure it as you like. It determines what is being written to the bar.
-myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
+myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">"  }
 myTreeConf =
   TSConfig
     { ts_hidechildren = True
@@ -175,6 +178,7 @@ myKeys =
         , ((nothing, xK_Print)                 , spawn screenshotClipboard)
         , ((mod4Mask .|. shiftMask, xK_p)         , spawn passwordTool)
         , ((mod4Mask,                           xK_r     ), sendMessage Rotate)
+        , ((mod4Mask,                           xK_y     ), nextScreen)
         , ((mod4Mask,                           xK_s     ), sendMessage Balance)
         --, ((mod4Mask, xK_g     ), gotoMenu) -- quick menus for switching windows
         , ((mod4Mask , xK_g     ), windowPrompt
@@ -185,7 +189,7 @@ myKeys =
         --, ((mod4Mask .|. controlMask, xK_x), xmonadPrompt myPromptConfig)
         , ((mod4Mask, xK_f), treeselectWorkspace myTreeConf myWorkspaces W.view) -- can change to view or greedy view
         , ((mod4Mask .|. shiftMask, xK_m     ), workspacePrompt def (windows . W.shift))
-        , ((mod4Mask, xK_a), treeselectAction myTreeConf [ Node (TSNode "Weather"    "displays weather"      (spawn "metar -d KTTN | xmessage -nearmouse -center -timeout 1 -title Trenton -buttons OK:1 -default OK -file - ")) []
+        , ((mod4Mask .|. shiftMask, xK_f), treeselectAction myTreeConf [ Node (TSNode "Weather"    "displays weather"      (spawn "metar -d KTTN | xmessage -nearmouse -center -timeout 1 -title Trenton -buttons OK:1 -default OK -file - ")) []
                                                         , Node (TSNode "zoom" "zoom conference" (spawn "zoom")) []
                                                         , Node (TSNode "Brightness" "Sets screen brightness using xbacklight" (return ()))
                                                                 [ Node (TSNode "Bright" "FULL POWER!!"            (spawn "xbacklight -set 100")) []
