@@ -11,11 +11,11 @@ Config { font = "-*-Fixed-Bold-R-Normal-*-16-*-*-*-*-*-*-*"
                         , Run Memory ["-t","Mem: <usedratio>%"] 10
                         , Run Swap [] 10
                         , Run Com "uname" ["-s","-r"] "" 36000
-                        , Run Com "/usr/bin/bash" ["-c", "NO_COLOR=1 ~/.xmonad/scripts/ticker.sh FB VGT ETH-USD | tr -s ' ' | tr '\r\n' ' ' "] "ticker" 3000
+                        , Run Com "/usr/bin/bash" ["-c", "NO_COLOR=1 ~/.xmonad/scripts/ticker.sh SQ CRSR PLTR FB ARKK ETH-USD | tr -s ' ' | tr '\r\n' ' ' "] "ticker" 3000
                         , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                         , Run StdinReader
                         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "%StdinReader% | %cpu% | %memory% * %swap% }{<fc=#ee9a00>%date%</fc> | %uname% | %CYVR% | <fc=#789012>%ticker%</fc> "
+        , template = "%StdinReader% | %cpu% | %memory% }{<fc=#aa9a00>%date%</fc> | %CYVR% | <fc=#789012>%ticker%</fc> "
         }

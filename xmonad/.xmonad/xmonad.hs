@@ -53,6 +53,11 @@ myFuzzyMatch _ [] = False
 myFuzzyMatch xxs@(x:xs) (y:ys) | toLower x == toLower y = myFuzzyMatch xs ys
                                | otherwise = myFuzzyMatch xxs ys
 
+-- border control
+myBorderWidth   = 4
+myNormalBorderColor  = "#3b4252"
+myFocusedBorderColor = "#bc96da"
+
 myPromptConfig = def
                  {
                    position = Top
@@ -88,6 +93,7 @@ myWorkspaces = [ Node "Browser" [] -- a workspace for your browser
  -- | Add very simple decorations to windows of a layout.
 myTabConfig = def { inactiveBorderColor = "#FF0000"
                   , activeTextColor = "#00FF00"}
+
 zenMode = renamed [Replace "Zen"] $ zenSpace BSP.emptyBSP
  where
   zenSpace =
@@ -140,7 +146,16 @@ main = do
 myBar = "xmobar"
 
 -- Custom PP, configure it as you like. It determines what is being written to the bar.
-myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">"  }
+myPP = xmobarPP {
+                ppCurrent = xmobarColor "#429942" "" . wrap "<" ">"
+                , ppTitle = xmobarColor "green" "" . shorten 40
+                , ppVisible = const ""
+                , ppHidden = const ""
+                , ppSep = "-"
+                , ppLayout = const ""
+                }
+
+   
 myTreeConf =
   TSConfig
     { ts_hidechildren = True
@@ -219,8 +234,11 @@ myConfig =   defaultConfig
         { manageHook = manageDocks <+> manageHook defaultConfig
         --, layoutHook = avoidStruts  $  layoutHook defaultConfig
         , layoutHook = avoidStruts $ myLayouts
+        , borderWidth        = myBorderWidth
         , workspaces = toWorkspaces myWorkspaces
         , logHook = workspaceHistoryHook
         , startupHook = myStartupHook     -- Startup scripts
         , modMask = mod4Mask     -- Rebind Mod to the Windows key
+        ,normalBorderColor  = myNormalBorderColor
+        ,focusedBorderColor = myFocusedBorderColor
         } `additionalKeys` myKeys
